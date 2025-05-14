@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/nav_singleTask">
+
+    <fragment
+        android:id="@+id/nav_singleTask"
+        android:name="ru.floppastar.multitask.ui.SingleTaskListFragment"
+        android:label="Задачи"
+        tools:layout="@layout/fragment_single_task_list" >
+        <action
+            android:id="@+id/action_singleTaskListFragment_to_editTaskFragment"
+            app:destination="@id/editSingleTaskFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/editSingleTaskFragment"
+        android:name="ru.floppastar.multitask.ui.EditSingleTaskFragment"
+        android:label="Редактирование задачи"
+        tools:layout="@layout/fragment_edit_single_task">
+        <argument
+            android:name="singleTask"
+            app:argType="ru.floppastar.multitask.DataClasses.SingleTask"
+            app:nullable="true"/>
+    </fragment>
+</navigation>
