@@ -24,4 +24,12 @@ object PrefsManager {
     fun clearProfile() {
         setProfileId(0)
     }
+
+    fun saveSortMode(mode: Int) {
+        preferences.edit().putInt("sort_mode", mode).apply()
+    }
+
+    fun getSortMode(): Int {
+        return preferences.getInt("sort_mode", 0)
+    }
 }

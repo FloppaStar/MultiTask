@@ -2,6 +2,7 @@ package ru.floppastar.multitask.db
 
 import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
+import android.provider.ContactsContract.Data
 import android.util.Log
 import ru.floppastar.multitask.DataClasses.Profile
 import ru.floppastar.multitask.DataClasses.SingleTask
@@ -22,14 +23,15 @@ class DatabaseRepository(private val dbHelper: DatabaseHelper) {
                 val isCompleted = getInt(getColumnIndexOrThrow(DatabaseHelper.COLUMN_SINGLE_TASK_IS_COMPLETED))
                 val deadline = getString(getColumnIndexOrThrow(DatabaseHelper.COLUMN_SINGLE_TASK_DEADLINE))
                 val taskRepeat = getInt(getColumnIndexOrThrow(DatabaseHelper.COLUMN_SINGLE_TASK_REPEAT))
-                singleTask.add(SingleTask(taskId, profileId, taskName, isCompleted, deadline, taskRepeat))
+                val lastUpdateTime = getString(getColumnIndexOrThrow(DatabaseHelper.COLUMN_SINGLE_TASK_LAST_UPDATE))
+                singleTask.add(SingleTask(taskId, profileId, taskName, isCompleted, deadline, taskRepeat, lastUpdateTime))
             }
         }
         cursor.close()
         db.close()
         return singleTask
     }
-    fun insertSingleTask(name: String, profileId: Int, isCompleted: Int, deadline: String, taskRepeat: Int) {
+    fun insertSingleTask(name: String, profileId: Int, isCompleted: Int, deadline: String, taskRepeat: Int, lastUpdate: String) {
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
             put(DatabaseHelper.COLUMN_SINGLE_TASK_NAME, name)
@@ -37,6 +39,7 @@ class DatabaseRepository(private val dbHelper: DatabaseHelper) {
             put(DatabaseHelper.COLUMN_SINGLE_TASK_IS_COMPLETED, isCompleted)
             put(DatabaseHelper.COLUMN_SINGLE_TASK_DEADLINE, deadline)
             put(DatabaseHelper.COLUMN_SINGLE_TASK_REPEAT, taskRepeat)
+            put(DatabaseHelper.COLUMN_SINGLE_TASK_LAST_UPDATE, lastUpdate)
         }
         db.insert(DatabaseHelper.TABLE_SINGLE_TASK, null, values)
         db.close()
@@ -114,8 +117,7 @@ class DatabaseRepository(private val dbHelper: DatabaseHelper) {
                 val profileId = getInt(getColumnIndexOrThrow(DatabaseHelper.COLUMN_PROFILE_ID))
                 val profileName = getString(getColumnIndexOrThrow(DatabaseHelper.COLUMN_PROFILE_NAME))
                 val profileType = getString(getColumnIndexOrThrow(DatabaseHelper.COLUMN_PROFILE_TYPE))
-                val password = getString(getColumnIndexOrThrow(DatabaseHelper.COLUMN_PROFILE_PASSWORD))
-                profile.add(Profile(profileId, profileName, profileType, password))
+                profile.add(Profile(profileId, profileName, profileType))
             }
         }
         cursor.close()
@@ -123,14 +125,37 @@ class DatabaseRepository(private val dbHelper: DatabaseHelper) {
         return profile
     }
 
-    fun insertProfile(name: String, type: String, password: String) {
+    fun insertProfile(name: String, type: String): Int {
         val db = dbHelper.writableDatabase
         val values = ContentValues().apply {
             put(DatabaseHelper.COLUMN_PROFILE_NAME, name)
             put(DatabaseHelper.COLUMN_PROFILE_TYPE, type)
-            put(DatabaseHelper.COLUMN_PROFILE_PASSWORD, password)
         }
-        db.insert(DatabaseHelper.TABLE_PROFILE, null, values)
+        val rowId = db.insert(DatabaseHelper.TABLE_PROFILE, null, values)
+        return rowId.toInt()
+    }
+
+    fun editProfile(profile: Profile) {
+        val db = dbHelper.writableDatabase
+        val values = ContentValues().apply {
+            put(DatabaseHelper.COLUMN_PROFILE_NAME, profile.profileName)
+            put(DatabaseHelper.COLUMN_PROFILE_TYPE, profile.profileType)
+        }
+        db.update(
+            DatabaseHelper.TABLE_PROFILE,
+            values,
+            "${DatabaseHelper.COLUMN_PROFILE_ID} = ${profile.profileId}",
+            null
+        )
+        db.close()
+    }
+
+    fun deleteProfile(profileId: Int) {
+        val db = dbHelper.writableDatabase
+        db.delete(
+            DatabaseHelper.TABLE_PROFILE,
+            "${DatabaseHelper.COLUMN_PROFILE_ID} = $profileId", null
+        )
         db.close()
     }
 

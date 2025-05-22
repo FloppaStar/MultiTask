@@ -57,4 +57,9 @@ class SingleTaskAdapter(
             else -> "не указано"
         }
     }
+    fun updateList(newList: List<SingleTask>) {
+        singleTaskList.clear()
+        singleTaskList.addAll(newList)
+        notifyDataSetChanged()
+    }
 }

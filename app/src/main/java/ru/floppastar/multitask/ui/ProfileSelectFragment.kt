@@ -37,8 +37,37 @@ class ProfileSelectFragment : Fragment() {
             PrefsManager.setProfileId(profile.profileId)
             val intent = Intent(requireContext(), MainActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)}, {_, _ -> })
+            startActivity(intent)}, {profile, position ->
+            showProfileBottomSheet(profile, position)})
 
         recyclerView.adapter = profileAdapter
+
+        view.findViewById<View>(R.id.fabAddTask).setOnClickListener {
+            showProfileBottomSheet(null, 0)
+        }
+    }
+
+
+    private fun showProfileBottomSheet(profile: Profile?, position: Int) {
+        val dialog = ProfileBottomSheetDialog(profile,
+            onSave = { updatedProfile ->
+                if (profile == null) {
+                    val newId = repository.insertProfile(updatedProfile.profileName, updatedProfile.profileType)
+                    val newProfile = updatedProfile.copy(profileId = newId)
+                    profileList.add(newProfile)
+                    profileAdapter.notifyItemInserted(profileList.size - 1)
+                } else {
+                    repository.editProfile(updatedProfile)
+                    profileList[position] = updatedProfile
+                    profileAdapter.notifyItemChanged(position)
+                }
+            },
+            onDelete = {
+                repository.deleteProfile(it.profileId)
+                profileList.removeAt(position)
+                profileAdapter.notifyItemRemoved(position)
+            }
+        )
+        dialog.show(parentFragmentManager, "ProfileBottomSheetDialog")
     }
 }

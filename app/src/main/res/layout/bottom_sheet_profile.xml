@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/bottomSheetLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@drawable/rounded_top_sheet"
+    android:gravity="center_horizontal">
+
+    <TextView
+        android:id="@+id/tvTaskInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Редактирование профиля"
+        android:textColor="?android:textColorPrimary"
+        android:textSize="22dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginBottom="12dp"/>
+    <EditText
+        android:id="@+id/etProfileName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Имя профиля"
+        android:inputType="textPersonName"
+        android:layout_marginBottom="5dp"/>
+
+    <EditText
+        android:id="@+id/etProfileType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Тип профиля"
+        android:inputType="text"
+        android:layout_marginBottom="5dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="16dp">
+
+        <Button
+            android:id="@+id/btnDeleteProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Удалить"
+            android:layout_weight="1"
+            android:backgroundTint="@color/red"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/btnSaveProfile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Сохранить"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp" />
+    </LinearLayout>
+</LinearLayout>

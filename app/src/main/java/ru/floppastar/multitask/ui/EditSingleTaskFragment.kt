@@ -71,7 +71,7 @@ class EditSingleTaskFragment : Fragment() {
         if (singleTask != null)
             initializeFragment(singleTask)
         else {
-            singleTask = SingleTask(0, PrefsManager.getProfileId(), "", 0, "",  0)
+            singleTask = SingleTask(0, PrefsManager.getProfileId(), "", 0, "",  0, "")
             btDelete.isVisible = false
         }
         repository = DatabaseRepository(DatabaseHelper(view.context))
@@ -91,7 +91,6 @@ class EditSingleTaskFragment : Fragment() {
 
         btClearDateTime.setOnClickListener {
             clearDateTime()
-            rbRepeatNone.isChecked = true
         }
 
         rgRepeat.setOnCheckedChangeListener { _, checkedId ->
@@ -108,7 +107,7 @@ class EditSingleTaskFragment : Fragment() {
                 if(updatedTask.taskId != 0)
                     repository.editSingleTask(updatedTask)
                 else
-                    repository.insertSingleTask(updatedTask.taskName, PrefsManager.getProfileId(), updatedTask.isCompleted, updatedTask.deadline, updatedTask.taskRepeat)
+                    repository.insertSingleTask(updatedTask.taskName, PrefsManager.getProfileId(), updatedTask.isCompleted, updatedTask.deadline, updatedTask.taskRepeat, updatedTask.lastUpdateTime)
                 findNavController().popBackStack()
             }
             catch (e: Exception){
@@ -135,6 +134,8 @@ class EditSingleTaskFragment : Fragment() {
             R.id.repeatMonthlyRadioButton -> 3
             else -> 0
         }
+        val sdf = SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.getDefault())
+        singleTask.lastUpdateTime = sdf.format(Calendar.getInstance().time)
         return singleTask
     }
 

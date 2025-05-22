@@ -10,5 +10,6 @@ data class SingleTask(
     var taskName: String,
     var isCompleted: Int,
     var deadline: String,
-    var taskRepeat: Int
+    var taskRepeat: Int,
+    var lastUpdateTime: String
 ) : Parcelable
